@@ -1,0 +1,50 @@
+1. Add Explicit Error Logging in _loadEntries()
+Modify _loadEntries() to catch and log exceptions clearly:
+"
+Future<void> _loadEntries() async {
+  try {
+    // Load data from API
+    final response = await fetchEntries();
+    if (response == null) throw Exception("API response is null");
+
+    setState(() {
+      entries = response;
+    });
+  } catch (e, stacktrace) {
+    debugPrint("Error loading entries: $e");
+    debugPrint("Stacktrace: $stacktrace");
+    // Optionally, show an error UI or retry mechanism
+  }
+}
+
+"
+
+2. Enable Detailed Logging
+In main.dart, enable logging globally:
+"
+void main() {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    debugPrint("Flutter Error: ${details.exception}");
+    debugPrint("Stacktrace: ${details.stack}");
+  };
+  runApp(MyApp());
+}
+
+"
+
+3. Verify API Calls
+Use Postman or cURL to manually call your API and verify responses.
+Log API responses before parsing:
+"
+final response = await fetchEntries();
+debugPrint("API Response: ${response?.body}");
+
+"
+
+4. Inspect Network Requests
+Use Charles Proxy or Wireshark to inspect API calls.
+Enable Flutter’s Dio logging interceptor (if using Dio for HTTP):
+"
+Dio dio = Dio();
+dio.interceptors.add(LogInterceptor(responseBody: true));
+"
